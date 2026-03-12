@@ -104,20 +104,51 @@ namespace NumerosPseudoaleatorios
                         break;
 
                     case 2:
-                        int x0 = 13;
-                        int a = 11;
-                        int m = 32;
-                        int cantidad1 = 8;
+                        Console.WriteLine("--- Configuración del Algoritmo Congruencial Multiplicativo ---");
 
-                        AlgoritmoCongruencialMultiplicativo(x0, a, m, cantidad1);
+                        Console.Write("Ingrese la semilla (X0) - Debe ser impar: ");
+                        int x0 = int.Parse(Console.ReadLine());
+
+                        Console.Write("Ingrese la constante multiplicativa (a): ");
+                        int a = int.Parse(Console.ReadLine());
+
+                        Console.Write("Ingrese el módulo (m): ");
+                        int m = int.Parse(Console.ReadLine());
+
+                        Console.Write("¿Cuántos números desea generar? (cantidad): ");
+                        int cantidad = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("\n--------------------------------------------------------------");
+
+                        // Ejecutar el método con los valores ingresados
+                        AlgoritmoCongruencialMultiplicativo(x0, a, m, cantidad);
                         break;
 
                     case 3:
-                        List<int> secuencia = new List<int> { 65, 89, 98, 3, 69 };
-                        int modulo_m = 100;
-                        int cantidad = 7;
+                        
+                        Console.WriteLine("--- Configuración del Algoritmo Congruencial Aditivo ---");
 
-                        AlgoritmoCongruencialAditivo(secuencia, modulo_m, cantidad);
+                        // 1. Solicitar la secuencia inicial (X1, X2, ..., Xn)
+                        Console.WriteLine("Ingrese la secuencia inicial (ejemplo: 65, 89, 98, 03, 69):");
+                        string entrada = Console.ReadLine();
+
+                        // Convertimos el string a una lista de enteros
+                        List<int> secuencia = entrada.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                                     .Select(int.Parse)
+                                                     .ToList();
+
+                        // 2. Solicitar el módulo m
+                        Console.Write("Ingrese el valor del módulo (m): ");
+                        int modulo_m = int.Parse(Console.ReadLine());
+
+                        // 3. Solicitar la cantidad de números a generar
+                        Console.Write("¿Cuántos números adicionales desea generar?: ");
+                        int cantidad2 = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("\n--------------------------------------------------------------");
+
+                        // Ejecutar el método original
+                        AlgoritmoCongruencialAditivo(secuencia, modulo_m, cantidad2);
                         break;
                     case 0:
                         Console.WriteLine("Volviendo al menú anterior.");
@@ -792,15 +823,13 @@ namespace NumerosPseudoaleatorios
                 X.Add(nuevo_X);
 
                 // Ecuación: r_i = X_i / (m - 1)
-                // Es importante castear a (double) para evitar la división entera en C#
                 double nuevo_r = (double)nuevo_X / (m - 1);
                 r.Add(nuevo_r);
 
-                // Índices para imprimir correctamente el texto
+                // Índices para imprimir correctamente
                 int indice_X = n + i + 1;
                 int indice_r = i + 1;
 
-                // Imprimir en consola con formato (F4 asegura que salgan 4 decimales)
                 Console.WriteLine($"X_{indice_X} = (X_{indice_X - 1} + X_{indice_X - n}) mod {m} " +
                                   $"= ({x_anterior} + {x_n_posiciones_atras:D2}) mod {m} = {nuevo_X,-2} \t " +
                                   $"r_{indice_r} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
@@ -827,12 +856,13 @@ namespace NumerosPseudoaleatorios
 
                 // Imprimir el proceso
                 Console.WriteLine($"X_{i} = ({a} * X_{i - 1}) mod {m} " +
-                                  $"= ({a} * {x_actual,-2}) mod {m} = {nuevo_X,-2} \t " +
-                                  $"r_{i} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
+                                    $"= ({a} * {x_actual,-2}) mod {m} = {nuevo_X,-2} \t " +
+                                    $"r_{i} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
 
                 // Actualizamos la semilla para la siguiente iteración
                 x_actual = nuevo_X;
             }
         }
+
     }
 }
