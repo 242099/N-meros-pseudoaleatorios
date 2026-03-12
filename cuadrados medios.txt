@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+
+namespace SimulacionCuadradosMedios
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("--- Algoritmo de Cuadrados Medios ---");
+            
+            // 1. Solicitar los datos iniciales
+            Console.Write("Ingresa la semilla inicial (X0) de 4 dígitos: ");
+            string entrada = Console.ReadLine();
+            int semilla = Convert.ToInt32(entrada);
+
+            // Usamos una lista para guardar los números y saber si se repiten
+            List<int> numerosGenerados = new List<int>();
+
+            int x = semilla;
+            int contador = 1;
+            bool seRepite = false;
+
+            // Encabezado de la tabla
+            Console.WriteLine("\n n \t X \t r");
+            Console.WriteLine("-------------------------");
+
+            // 2. El ciclo termina cuando se repite un número
+            while (seRepite == false)
+            {
+                // Elevar al cuadrado (usamos long porque el cuadrado de 4 dígitos puede ser grande)
+                long cuadrado = (long)x * x;
+
+                // Convertir a texto
+                string cuadradoTexto = cuadrado.ToString();
+
+                // Rellenar con ceros a la izquierda si tiene menos de 8 caracteres (estilo muy novato)
+                while (cuadradoTexto.Length < 8)
+                {
+                    cuadradoTexto = "0" + cuadradoTexto;
+                }
+
+                // Tomar los 4 dígitos de en medio (cortamos desde la posición 2 y tomamos 4 letras)
+                string centro = cuadradoTexto.Substring(2, 4);
+
+                // Ese texto del centro es nuestro nuevo X
+                int nuevoX = Convert.ToInt32(centro);
+
+                // Calcular el valor 'r' entre 0 y 1
+                double r = nuevoX / 10000.0;
+
+                // 3. Mostrar el X generado y el valor r (con 4 decimales)
+                Console.WriteLine(contador + " \t " + nuevoX + " \t " + r.ToString("0.0000"));
+
+                // Revisar si la lista ya contiene este número nuevo
+                if (numerosGenerados.Contains(nuevoX))
+                {
+                    seRepite = true; // Esto rompe el ciclo
+                    Console.WriteLine("\nEl ciclo terminó porque el número " + nuevoX + " se repitió.");
+                }
+                else
+                {
+                    // Si no se repite, lo agregamos a la lista
+                    numerosGenerados.Add(nuevoX);
+                    x = nuevoX; // El nuevo X ahora es el X para la siguiente vuelta
+                    contador++;
+                }
+            }
+
+            // 4. Validar que la corrida sea de mínimo 50 números
+            int totalGenerados = contador - 1; // Restamos 1 porque el contador sumó antes de repetir
+            
+            Console.WriteLine("\n--- Resumen ---");
+            if (totalGenerados < 50)
+            {
+                Console.WriteLine("La corrida fue de " + totalGenerados + " números. NO cumple el mínimo de 50.");
+                Console.WriteLine("Nota: El método de cuadrados medios degenera rápido. ¡Intenta con otra semilla (como 2113 o 5634)!");
+            }
+            else
+            {
+                Console.WriteLine("¡Excelente! La corrida fue de " + totalGenerados + " números. Cumple el mínimo de 50.");
+            }
+
+            Console.ReadLine();
+        }
+    }
+}

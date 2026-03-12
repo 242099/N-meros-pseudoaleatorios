@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+
+namespace SimulacionProductosMedios
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("--- Algoritmo de Productos Medios ---");
+            
+            // 1. Solicitar los datos iniciales (necesitamos dos semillas)
+            Console.Write("Ingresa la primera semilla (X0) de 4 dígitos: ");
+            string entrada1 = Console.ReadLine();
+            int x0 = Convert.ToInt32(entrada1);
+
+            Console.Write("Ingresa la segunda semilla (X1) de 4 dígitos: ");
+            string entrada2 = Console.ReadLine();
+            int x1 = Convert.ToInt32(entrada2);
+
+            // Lista para guardar el historial y checar si se repite
+            List<int> numerosGenerados = new List<int>();
+
+            int contador = 1;
+            bool seRepite = false;
+
+            // Encabezado de la tabla
+            Console.WriteLine("\n n \t X \t r");
+            Console.WriteLine("-------------------------");
+
+            // 2. El ciclo termina cuando se repite un número
+            while (seRepite == false)
+            {
+                // Multiplicar x0 por x1 (usamos long por si el número se hace muy grande)
+                long producto = (long)x0 * x1;
+
+                // Convertir el resultado a texto
+                string productoTexto = producto.ToString();
+
+                // Rellenar con ceros a la izquierda hasta que tenga 8 caracteres
+                while (productoTexto.Length < 8)
+                {
+                    productoTexto = "0" + productoTexto;
+                }
+
+                // Tomar los 4 dígitos de en medio (empezamos en la posición 2 y cortamos 4)
+                string centro = productoTexto.Substring(2, 4);
+
+                // Ese texto del centro es nuestro nuevo número generado (X)
+                int nuevoX = Convert.ToInt32(centro);
+
+                // Calcular el valor 'r' entre 0 y 1
+                double r = nuevoX / 10000.0;
+
+                // 3. Mostrar el X generado y el valor r (con 4 decimales)
+                Console.WriteLine(contador + " \t " + nuevoX + " \t " + r.ToString("0.0000"));
+
+                // Checar si la lista ya tiene este número nuevo
+                if (numerosGenerados.Contains(nuevoX))
+                {
+                    seRepite = true; // Cambiamos la variable para salir del ciclo while
+                    Console.WriteLine("\nEl ciclo terminó porque el número " + nuevoX + " se repitió.");
+                }
+                else
+                {
+                    // Si no se repite, lo guardamos en la lista
+                    numerosGenerados.Add(nuevoX);
+                    
+                    // Preparamos los valores para la siguiente vuelta
+                    x0 = x1;       // La semilla 2 pasa a ser la semilla 1
+                    x1 = nuevoX;   // El número nuevo pasa a ser la semilla 2
+                    
+                    contador = contador + 1; // Sumamos 1 al contador estilo básico
+                }
+            }
+
+            // 4. Validar que la corrida sea de mínimo 50 números
+            int totalGenerados = contador - 1; // Le quitamos 1 porque el contador sumó en la última vuelta
+            
+            Console.WriteLine("\n--- Resumen ---");
+            if (totalGenerados < 50)
+            {
+                Console.WriteLine("La corrida fue de " + totalGenerados + " números. NO cumple el mínimo de 50.");
+                Console.WriteLine("Nota: Intenta con otras semillas (por ejemplo: 5015 y 5734).");
+            }
+            else
+            {
+                Console.WriteLine("¡Excelente! La corrida fue de " + totalGenerados + " números. Cumple el mínimo de 50.");
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
