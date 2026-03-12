@@ -104,11 +104,20 @@ namespace NumerosPseudoaleatorios
                         break;
 
                     case 2:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo congruencial multiplicativo");
+                        int x0 = 13;
+                        int a = 11;
+                        int m = 32;
+                        int cantidad1 = 8;
+
+                        AlgoritmoCongruencialMultiplicativo(x0, a, m, cantidad1);
                         break;
 
                     case 3:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo congruencial aditivo");
+                        List<int> secuencia = new List<int> { 65, 89, 98, 3, 69 };
+                        int modulo_m = 100;
+                        int cantidad = 7;
+
+                        AlgoritmoCongruencialAditivo(secuencia, modulo_m, cantidad);
                         break;
                     case 0:
                         Console.WriteLine("Volviendo al menú anterior.");
@@ -175,15 +184,15 @@ namespace NumerosPseudoaleatorios
                 switch (opcion)
                 {
                     case 1:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo de cuadrados medios");
+                        CuadradosMedios();
                         break;
 
                     case 2:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo de productos medios");
+                        ProductosMedios();
                         break;
 
                     case 3:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo de multiplicador constante");
+                        MultiplicadorConstante();
                         break;
                     case 0:
                         Console.WriteLine("Volviendo al menú anterior.");
@@ -569,6 +578,231 @@ namespace NumerosPseudoaleatorios
                     return resultado;
                 }
                 Console.Write("Entrada inválida. Ingresa un número entero: ");
+            }
+        }
+        static void CuadradosMedios()
+        {
+            Console.WriteLine("--- Algoritmo de Cuadrados Medios ---");
+
+            Console.Write("Ingresa la semilla inicial (X0) de 4 dígitos: ");
+            string entrada = Console.ReadLine();
+            int semilla = Convert.ToInt32(entrada);
+
+            List<int> numerosGenerados = new List<int>();
+
+            int x = semilla;
+            int contador = 1;
+            bool seRepite = false;
+
+            Console.WriteLine("\n n \t X \t r");
+            Console.WriteLine("-------------------------");
+
+            // 2. El ciclo termina cuando se repite un número
+            while (seRepite == false)
+            {
+                // Elevar al cuadrado (usamos long porque el cuadrado de 4 dígitos puede ser grande)
+                long cuadrado = (long)x * x;
+
+                // Convertir a texto
+                string cuadradoTexto = cuadrado.ToString();
+
+                // Rellenar con ceros a la izquierda si tiene menos de 8 caracteres (estilo muy novato)
+                while (cuadradoTexto.Length < 8)
+                {
+                    cuadradoTexto = "0" + cuadradoTexto;
+                }
+
+                // Tomar los 4 dígitos de en medio (cortamos desde la posición 2 y tomamos 4 letras)
+                string centro = cuadradoTexto.Substring(2, 4);
+
+                // Ese texto del centro es nuestro nuevo X
+                int nuevoX = Convert.ToInt32(centro);
+
+                // Calcular el valor 'r' entre 0 y 1
+                double r = nuevoX / 10000.0;
+
+                // 3. Mostrar el X generado y el valor r (con 4 decimales)
+                Console.WriteLine(contador + " \t " + nuevoX + " \t " + r.ToString("0.0000"));
+
+                // Revisar si la lista ya contiene este número nuevo
+                if (numerosGenerados.Contains(nuevoX))
+                {
+                    seRepite = true; // Esto rompe el ciclo
+                    Console.WriteLine("\nEl ciclo terminó porque el número " + nuevoX + " se repitió.");
+                }
+                else
+                {
+                    // Si no se repite, lo agregamos a la lista
+                    numerosGenerados.Add(nuevoX);
+                    x = nuevoX; // El nuevo X ahora es el X para la siguiente vuelta
+                    contador++;
+                }
+            }
+
+            // 4. Validar que la corrida sea de mínimo 50 números
+            int totalGenerados = contador - 1; // Restamos 1 porque el contador sumó antes de repetir
+
+            Console.WriteLine("\n--- Resumen ---");
+            if (totalGenerados < 50)
+            {
+                Console.WriteLine("La corrida fue de " + totalGenerados + " números. NO cumple el mínimo de 50.");
+                Console.WriteLine("Nota: El método de cuadrados medios degenera rápido. ¡Intenta con otra semilla (como 2113 o 5634)!");
+            }
+            else
+            {
+                Console.WriteLine("¡Excelente! La corrida fue de " + totalGenerados + " números. Cumple el mínimo de 50.");
+            }
+
+            Console.ReadLine();
+        }
+        static void ProductosMedios()
+        {
+            Console.WriteLine("--- Algoritmo de Productos Medios ---");
+
+            // 1. Solicitar los datos iniciales (necesitamos dos semillas)
+            Console.Write("Ingresa la primera semilla (X0) de 4 dígitos: ");
+            string entrada1 = Console.ReadLine();
+            int x0 = Convert.ToInt32(entrada1);
+
+            Console.Write("Ingresa la segunda semilla (X1) de 4 dígitos: ");
+            string entrada2 = Console.ReadLine();
+            int x1 = Convert.ToInt32(entrada2);
+
+            // Lista para guardar el historial y checar si se repite
+            List<int> numerosGenerados = new List<int>();
+
+            int contador = 1;
+            bool seRepite = false;
+
+            // Encabezado de la tabla
+            Console.WriteLine("\n n \t X \t r");
+            Console.WriteLine("-------------------------");
+
+            // 2. El ciclo termina cuando se repite un número
+            while (seRepite == false)
+            {
+                // Multiplicar x0 por x1 (usamos long por si el número se hace muy grande)
+                long producto = (long)x0 * x1;
+
+                // Convertir el resultado a texto
+                string productoTexto = producto.ToString();
+
+                // Rellenar con ceros a la izquierda hasta que tenga 8 caracteres
+                while (productoTexto.Length < 8)
+                {
+                    productoTexto = "0" + productoTexto;
+                }
+
+                // Tomar los 4 dígitos de en medio (empezamos en la posición 2 y cortamos 4)
+                string centro = productoTexto.Substring(2, 4);
+
+                // Ese texto del centro es nuestro nuevo número generado (X)
+                int nuevoX = Convert.ToInt32(centro);
+
+                // Calcular el valor 'r' entre 0 y 1
+                double r = nuevoX / 10000.0;
+
+                // 3. Mostrar el X generado y el valor r (con 4 decimales)
+                Console.WriteLine(contador + " \t " + nuevoX + " \t " + r.ToString("0.0000"));
+
+                // Checar si la lista ya tiene este número nuevo
+                if (numerosGenerados.Contains(nuevoX))
+                {
+                    seRepite = true; // Cambiamos la variable para salir del ciclo while
+                    Console.WriteLine("\nEl ciclo terminó porque el número " + nuevoX + " se repitió.");
+                }
+                else
+                {
+                    // Si no se repite, lo guardamos en la lista
+                    numerosGenerados.Add(nuevoX);
+
+                    // Preparamos los valores para la siguiente vuelta
+                    x0 = x1;       // La semilla 2 pasa a ser la semilla 1
+                    x1 = nuevoX;   // El número nuevo pasa a ser la semilla 2
+
+                    contador = contador + 1; // Sumamos 1 al contador estilo básico
+                }
+            }
+
+            // 4. Validar que la corrida sea de mínimo 50 números
+            int totalGenerados = contador - 1; // Le quitamos 1 porque el contador sumó en la última vuelta
+
+            Console.WriteLine("\n--- Resumen ---");
+            if (totalGenerados < 50)
+            {
+                Console.WriteLine("La corrida fue de " + totalGenerados + " números. NO cumple el mínimo de 50.");
+                Console.WriteLine("Nota: Intenta con otras semillas (por ejemplo: 5015 y 5734).");
+            }
+            else
+            {
+                Console.WriteLine("¡Excelente! La corrida fue de " + totalGenerados + " números. Cumple el mínimo de 50.");
+            }
+
+            Console.ReadLine();
+
+        }
+
+        public static void AlgoritmoCongruencialAditivo(List<int> secuenciaInicial, int m, int cantidadAGenerar)
+        {
+            // Creamos una nueva lista basada en la secuencia inicial para trabajar sobre ella
+            List<int> X = new List<int>(secuenciaInicial);
+            int n = X.Count;
+            List<double> r = new List<double>();
+
+            Console.WriteLine("Solución:\n");
+
+            for (int i = 0; i < cantidadAGenerar; i++)
+            {
+                // X_{i-1} corresponde al último elemento que tenemos guardado
+                int x_anterior = X[X.Count - 1];
+                // X_{i-n} corresponde al elemento en la posición actual del ciclo 'i'
+                int x_n_posiciones_atras = X[i];
+
+                // Ecuación: X_i = (X_{i-1} + X_{i-n}) mod m
+                int nuevo_X = (x_anterior + x_n_posiciones_atras) % m;
+                X.Add(nuevo_X);
+
+                // Ecuación: r_i = X_i / (m - 1)
+                // Es importante castear a (double) para evitar la división entera en C#
+                double nuevo_r = (double)nuevo_X / (m - 1);
+                r.Add(nuevo_r);
+
+                // Índices para imprimir correctamente el texto
+                int indice_X = n + i + 1;
+                int indice_r = i + 1;
+
+                // Imprimir en consola con formato (F4 asegura que salgan 4 decimales)
+                Console.WriteLine($"X_{indice_X} = (X_{indice_X - 1} + X_{indice_X - n}) mod {m} " +
+                                  $"= ({x_anterior} + {x_n_posiciones_atras:D2}) mod {m} = {nuevo_X,-2} \t " +
+                                  $"r_{indice_r} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
+            }
+        }
+        public static void AlgoritmoCongruencialMultiplicativo(int x0, int a, int m, int cantidadAGenerar)
+        {
+            int x_actual = x0;
+            List<int> X = new List<int>();
+            List<double> r = new List<double>();
+
+            Console.WriteLine($"Parámetros iniciales: X0 = {x0}, a = {a}, m = {m}\n");
+            Console.WriteLine("Solución paso a paso:\n");
+
+            for (int i = 1; i <= cantidadAGenerar; i++)
+            {
+                // Ecuación: X_{i} = (a * X_{i-1}) mod m
+                int nuevo_X = (a * x_actual) % m;
+                X.Add(nuevo_X);
+
+                // Ecuación: r_i = X_i / (m - 1)
+                double nuevo_r = (double)nuevo_X / (m - 1);
+                r.Add(nuevo_r);
+
+                // Imprimir el proceso
+                Console.WriteLine($"X_{i} = ({a} * X_{i - 1}) mod {m} " +
+                                  $"= ({a} * {x_actual,-2}) mod {m} = {nuevo_X,-2} \t " +
+                                  $"r_{i} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
+
+                // Actualizamos la semilla para la siguiente iteración
+                x_actual = nuevo_X;
             }
         }
     }
