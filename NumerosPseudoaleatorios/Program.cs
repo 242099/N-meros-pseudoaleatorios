@@ -143,11 +143,11 @@ namespace NumerosPseudoaleatorios
                 switch (opcion)
                 {
                     case 1:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo congruencial cuadrático");
+                        EjecutarCongruencialCuadratico();
                         break;
 
                     case 2:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo Blum, Blum y Shub");
+                        EjecutarBlumBlumShub();
                         break;
                     case 0:
                         Console.WriteLine("Volviendo al menú anterior.");
@@ -466,6 +466,112 @@ namespace NumerosPseudoaleatorios
             {
                 Console.WriteLine("\nPresiona cualquier tecla para continuar...");
                 Console.ReadKey();
+            }
+        }
+        static void EjecutarCongruencialCuadratico()
+        {
+            Console.Clear();
+            Console.WriteLine("--- ALGORITMO CONGRUENCIAL CUADRÁTICO ---");
+
+            try
+            {
+                long x0 = PedirValor("Ingresa la Semilla (X0): ");
+                long a = PedirValor("Ingresa la constante 'a': ");
+                long b = PedirValor("Ingresa la constante 'b': ");
+                long c = PedirValor("Ingresa la constante 'c': ");
+                long m = PedirValor("Ingresa el Módulo 'm': ");
+                int N = (int)PedirValor("Ingresa la cantidad de números a generar (N): ");
+
+                if (m <= 0)
+                {
+                    Console.WriteLine("Error: El módulo 'm' debe ser mayor a 0.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\n i \t Xi \t\t ri");
+                Console.WriteLine("------------------------------------------------");
+
+                long xi = x0;
+
+                for (int i = 0; i < N; i++)
+                {
+                    // Desglosamos la operación para evitar el desbordamiento (overflow) de memoria con números grandes
+                    long parteA = (a * ((xi * xi) % m)) % m;
+                    long parteB = (b * xi) % m;
+                    long siguienteX = (parteA + parteB + c) % m;
+
+                    double ri = (double)siguienteX / (m - 1);
+
+                    // Imprimimos el resultado tabulado
+                    Console.WriteLine($" {i + 1} \t {siguienteX} \t\t {ri:F5}");
+
+                    xi = siguienteX;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nOcurrió un error: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPresiona cualquier tecla para volver al menú...");
+            Console.ReadKey();
+        }
+
+        static void EjecutarBlumBlumShub()
+        {
+            Console.Clear();
+            Console.WriteLine("--- ALGORITMO DE BLUM, BLUM Y SHUB (BBS) ---");
+
+            try
+            {
+                long p = PedirValor("Ingresa el número primo 'p' (congruente a 3 mod 4): ");
+                long q = PedirValor("Ingresa el número primo 'q' (congruente a 3 mod 4): ");
+                long s = PedirValor("Ingresa la semilla 's' (primo relativo de p*q): ");
+                int N = (int)PedirValor("Ingresa la cantidad de números a generar (N): ");
+
+                // Verificación de congruencia (criptográficamente necesario)
+                if (p % 4 != 3 || q % 4 != 3)
+                {
+                    Console.WriteLine("\n[Advertencia] p y q deberían ser congruentes con 3 mod 4 para que BBS sea seguro.");
+                    Console.WriteLine("Continuando de todos modos para fines de simulación...\n");
+                }
+
+                long n = p * q;
+                long xi = (s * s) % n; // X0 inicial
+
+                Console.WriteLine($"\nValor de n (p*q) = {n}");
+                Console.WriteLine(" i \t Xi \t\t ri");
+                Console.WriteLine("------------------------------------------------");
+
+                for (int i = 0; i < N; i++)
+                {
+                    xi = (xi * xi) % n;
+                    double ri = (double)xi / (n - 1);
+
+                    Console.WriteLine($" {i + 1} \t {xi} \t\t {ri:F5}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nOcurrió un error: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPresiona cualquier tecla para volver al menú...");
+            Console.ReadKey();
+        }
+
+        // Método auxiliar para evitar repetir código al pedir datos
+        static long PedirValor(string mensaje)
+        {
+            Console.Write(mensaje);
+            while (true)
+            {
+                if (long.TryParse(Console.ReadLine(), out long resultado))
+                {
+                    return resultado;
+                }
+                Console.Write("Entrada inválida. Ingresa un número entero: ");
             }
         }
     }
