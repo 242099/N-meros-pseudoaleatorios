@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+
+public class SimulacionMultiplicativo
+{
+    public static void Main()
+    {
+        // Valores de prueba basados en las reglas de tu libro para periodo máximo:
+        // k = 1  => a = 3 + 8(1) = 11
+        // g = 5  => m = 2^5 = 32
+        // X0 debe ser impar => X0 = 13
+        // Periodo máximo esperado: N = m / 4 = 32 / 4 = 8 números
+        
+        int x0 = 13;
+        int a = 11;
+        int m = 32;
+        int cantidad = 8; // Generaremos 8 números para ver el periodo completo
+
+        // Ejecutar el método
+        AlgoritmoCongruencialMultiplicativo(x0, a, m, cantidad);
+    }
+
+    public static void AlgoritmoCongruencialMultiplicativo(int x0, int a, int m, int cantidadAGenerar)
+    {
+        int x_actual = x0;
+        List<int> X = new List<int>();
+        List<double> r = new List<double>();
+
+        Console.WriteLine($"Parámetros iniciales: X0 = {x0}, a = {a}, m = {m}\n");
+        Console.WriteLine("Solución paso a paso:\n");
+
+        for (int i = 1; i <= cantidadAGenerar; i++)
+        {
+            // Ecuación: X_{i} = (a * X_{i-1}) mod m
+            int nuevo_X = (a * x_actual) % m;
+            X.Add(nuevo_X);
+
+            // Ecuación: r_i = X_i / (m - 1)
+            double nuevo_r = (double)nuevo_X / (m - 1);
+            r.Add(nuevo_r);
+
+            // Imprimir el proceso
+            Console.WriteLine($"X_{i} = ({a} * X_{i-1}) mod {m} " +
+                              $"= ({a} * {x_actual,-2}) mod {m} = {nuevo_X,-2} \t " +
+                              $"r_{i} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
+
+            // Actualizamos la semilla para la siguiente iteración
+            x_actual = nuevo_X;
+        }
+    }
+}

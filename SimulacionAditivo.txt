@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+
+public class GeneradorPseudoaleatorio
+{
+    public static void Main()
+    {
+        // Secuencia inicial del Ejemplo 2.9: 65, 89, 98, 03, 69
+        List<int> secuencia = new List<int> { 65, 89, 98, 3, 69 };
+        int modulo_m = 100;
+        int cantidad = 7;
+
+        // Ejecutar el método
+        AlgoritmoCongruencialAditivo(secuencia, modulo_m, cantidad);
+    }
+
+    public static void AlgoritmoCongruencialAditivo(List<int> secuenciaInicial, int m, int cantidadAGenerar)
+    {
+        // Creamos una nueva lista basada en la secuencia inicial para trabajar sobre ella
+        List<int> X = new List<int>(secuenciaInicial);
+        int n = X.Count;
+        List<double> r = new List<double>();
+
+        Console.WriteLine("Solución:\n");
+
+        for (int i = 0; i < cantidadAGenerar; i++)
+        {
+            // X_{i-1} corresponde al último elemento que tenemos guardado
+            int x_anterior = X[X.Count - 1];
+            // X_{i-n} corresponde al elemento en la posición actual del ciclo 'i'
+            int x_n_posiciones_atras = X[i];
+
+            // Ecuación: X_i = (X_{i-1} + X_{i-n}) mod m
+            int nuevo_X = (x_anterior + x_n_posiciones_atras) % m;
+            X.Add(nuevo_X);
+
+            // Ecuación: r_i = X_i / (m - 1)
+            // Es importante castear a (double) para evitar la división entera en C#
+            double nuevo_r = (double)nuevo_X / (m - 1);
+            r.Add(nuevo_r);
+
+            // Índices para imprimir correctamente el texto
+            int indice_X = n + i + 1;
+            int indice_r = i + 1;
+
+            // Imprimir en consola con formato (F4 asegura que salgan 4 decimales)
+            Console.WriteLine($"X_{indice_X} = (X_{indice_X - 1} + X_{indice_X - n}) mod {m} " +
+                              $"= ({x_anterior} + {x_n_posiciones_atras:D2}) mod {m} = {nuevo_X,-2} \t " +
+                              $"r_{indice_r} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
+        }
+    }
+}
