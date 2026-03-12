@@ -18,7 +18,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("===== MÉTODOS PARA GENERAR NÚMEROS PSEUDOALEATORIOS =====\n");
                 Console.WriteLine("1. Congruenciales");
                 Console.WriteLine("2. No congruenciales");
@@ -54,7 +53,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== MÉTODOS CONGRUENCIALES ===\n");
                 Console.WriteLine("1. Congruenciales lineales");
                 Console.WriteLine("2. Congruenciales no lineales");
@@ -90,7 +88,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== CONGRUENCIALES LINEALES ===\n");
                 Console.WriteLine("1. Algoritmo congruencial lineal");
                 Console.WriteLine("2. Algoritmo congruencial multiplicativo");
@@ -131,7 +128,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== CONGRUENCIALES NO LINEALES ===\n");
                 Console.WriteLine("1. Algoritmo congruencial cuadrático");
                 Console.WriteLine("2. Algoritmo Blum, Blum y Shub");
@@ -167,7 +163,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== NO CONGRUENCIALES ===\n");
                 Console.WriteLine("1. Algoritmo de cuadrados medios");
                 Console.WriteLine("2. Algoritmo de productos medios");
@@ -241,6 +236,8 @@ namespace NumerosPseudoaleatorios
 
         static void AlgoritmoCongruencialLinealObtencionDatos()
         {
+            verificar = true;
+            numerosUnicos.Clear();
             Console.WriteLine("---Algoritmo Congruencial Lineal---");
             int cantNum = (int)datos("¿Qué cantidad de números deseas generar?: ");
             Console.WriteLine("Ingresa los siguientes valores (Solo enteros positivos): ");
