@@ -18,7 +18,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("===== MÉTODOS PARA GENERAR NÚMEROS PSEUDOALEATORIOS =====\n");
                 Console.WriteLine("1. Congruenciales");
                 Console.WriteLine("2. No congruenciales");
@@ -54,7 +53,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== MÉTODOS CONGRUENCIALES ===\n");
                 Console.WriteLine("1. Congruenciales lineales");
                 Console.WriteLine("2. Congruenciales no lineales");
@@ -90,7 +88,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== CONGRUENCIALES LINEALES ===\n");
                 Console.WriteLine("1. Algoritmo congruencial lineal");
                 Console.WriteLine("2. Algoritmo congruencial multiplicativo");
@@ -131,7 +128,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== CONGRUENCIALES NO LINEALES ===\n");
                 Console.WriteLine("1. Algoritmo congruencial cuadrático");
                 Console.WriteLine("2. Algoritmo Blum, Blum y Shub");
@@ -143,11 +139,11 @@ namespace NumerosPseudoaleatorios
                 switch (opcion)
                 {
                     case 1:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo congruencial cuadrático");
+                        EjecutarCongruencialCuadratico();
                         break;
 
                     case 2:
-                        Console.WriteLine("\nSeleccionaste: Algoritmo Blum, Blum y Shub");
+                        EjecutarBlumBlumShub();
                         break;
                     case 0:
                         Console.WriteLine("Volviendo al menú anterior.");
@@ -167,7 +163,6 @@ namespace NumerosPseudoaleatorios
 
             do
             {
-                Console.Clear();
                 Console.WriteLine("=== NO CONGRUENCIALES ===\n");
                 Console.WriteLine("1. Algoritmo de cuadrados medios");
                 Console.WriteLine("2. Algoritmo de productos medios");
@@ -241,6 +236,8 @@ namespace NumerosPseudoaleatorios
 
         static void AlgoritmoCongruencialLinealObtencionDatos()
         {
+            verificar = true;
+            numerosUnicos.Clear();
             Console.WriteLine("---Algoritmo Congruencial Lineal---");
             int cantNum = (int)datos("¿Qué cantidad de números deseas generar?: ");
             Console.WriteLine("Ingresa los siguientes valores (Solo enteros positivos): ");
@@ -305,6 +302,274 @@ namespace NumerosPseudoaleatorios
             }
 
             return Tuple.Create(xGenerados, numAleatorios, numCreadosConExito);
+        }
+
+        //Método Multiplicador Constante
+        static void MultiplicadorConstante()
+        {
+            Console.Clear();
+            try
+            {
+                Console.WriteLine("=== MÉTODO MULTIPLICADOR CONSTANTE ===\n");
+
+                // ========== DECLARACIÓN DE VARIABLES ==========
+                // X = semilla, a = constante (ambas de 4 dígitos)
+                long X = 0, a = 0;
+
+                // Validar semilla
+                try
+                {
+                    Console.Write("Semilla inicial X0 (4 dígitos): ");
+                    X = long.Parse(Console.ReadLine());//Convierte texto a número
+                }
+                catch (FormatException)// Error si el usuario escribe letras o símbolos
+                {
+                    Console.WriteLine("Error: Debe ingresar un número válido para la semilla");
+                    Console.ReadKey();
+                    return;// Sale del método y regresa al menú
+                }
+                catch (OverflowException)// Error si el número es demasiado grande
+                {
+                    Console.WriteLine("Error: La semilla es demasiado grande");
+                    Console.ReadKey();
+                    return;
+                }
+
+                // Validar constante
+                try
+                {
+                    Console.Write("Constante a (4 dígitos): ");
+                    a = long.Parse(Console.ReadLine());
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Debe ingresar un número válido para la constante");
+                    Console.ReadKey();
+                    return;
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("Error: La constante es demasiado grande");
+                    Console.ReadKey();
+                    return;
+                }
+                // ========== VALIDACIÓN DE 4 DÍGITOS ==========
+                // Verifica que ambos números tengan exactamente 4 dígitos (1000 a 9999)
+                if (X < 1000 || X > 9999 || a < 1000 || a > 9999)
+                {
+                    Console.WriteLine("Error: Deben ser números de 4 dígitos (1000 - 9999)");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando números...\n");
+
+                // Limpiar HashSet para este método
+                numerosUnicos.Clear();
+                verificar = true;
+
+                // Encabezados
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("===========================================");
+                Console.WriteLine("| i | Y        | X_i+1 | r_i   |");
+                Console.WriteLine("|---|----------|-------|-------|");
+
+                // Variable para contar (FUERA del ciclo)
+                // Esta variable lleva la cuenta de cuántos números se generaron realment
+                int totalGenerados = 0;
+
+                // Generar 50 números
+                for (int i = 0; i < 50; i++)
+                {
+                    try
+                    {
+                        // PASO 1: Calcular Y = a * X
+                        long Y = a * X;
+
+                        // PASO 2: Obtener los 4 dígitos del centro
+                        string Ytexto = Y.ToString().PadLeft(8, '0');
+
+                        if (Ytexto.Length < 8) // Verifica que tenga al menos 8 dígitos
+
+                        {
+                            throw new Exception("Error al formatear el número");
+                        }
+
+                        //Toma los 4 digitos del centro
+                        string centro = Ytexto.Substring(2, 4);
+                        long nuevoX = long.Parse(centro);//convierte a número
+
+                        // PASO 3: Calcular r = 0.dígitos (4 decimales)
+                        string rTexto = "0." + nuevoX.ToString("D4");
+                        double r = double.Parse(rTexto);
+                        r = Math.Round(r, 4);
+
+                        // Validar que r esté entre 0 y 1 usando el verificador
+                        verificar = verificador(r);
+
+                        if (verificar == true)
+                        {
+                            // Mostrar resultado
+                            Console.WriteLine($"| {i,-2} | {Y,-8} | {nuevoX,-5} | {r,-5:F4} |");
+
+                            // Actualizar X y contador
+                            X = nuevoX;
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nCiclo terminado en iteración {i} por repetición o valor fuera de rango");
+                            break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Console.WriteLine($"Error: Problema al extraer dígitos en iteración {i}");
+                        break;
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine($"Error: Problema al convertir números en iteración {i}");
+                        break;
+                    }
+                    catch (OverflowException)
+                    {
+                        Console.WriteLine($"Error: Desbordamiento en iteración {i}");
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error inesperado en iteración {i}: {ex.Message}");
+                        break;
+                    }
+                }
+
+                Console.WriteLine("===========================================");
+                Console.WriteLine($"\nTotal: {totalGenerados} números generados");
+
+                if (totalGenerados < 50)
+                {
+                    Console.WriteLine($"Nota: Solo se generaron {totalGenerados} de 50 números debido a repetición o error");
+                }
+
+                // Limpiar HashSet para el siguiente método
+                numerosUnicos.Clear();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nError general: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("\nPresiona cualquier tecla para continuar...");
+                Console.ReadKey();
+            }
+        }
+        static void EjecutarCongruencialCuadratico()
+        {
+            Console.Clear();
+            Console.WriteLine("--- ALGORITMO CONGRUENCIAL CUADRÁTICO ---");
+
+            try
+            {
+                long x0 = PedirValor("Ingresa la Semilla (X0): ");
+                long a = PedirValor("Ingresa la constante 'a': ");
+                long b = PedirValor("Ingresa la constante 'b': ");
+                long c = PedirValor("Ingresa la constante 'c': ");
+                long m = PedirValor("Ingresa el Módulo 'm': ");
+                int N = (int)PedirValor("Ingresa la cantidad de números a generar (N): ");
+
+                if (m <= 0)
+                {
+                    Console.WriteLine("Error: El módulo 'm' debe ser mayor a 0.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\n i \t Xi \t\t ri");
+                Console.WriteLine("------------------------------------------------");
+
+                long xi = x0;
+
+                for (int i = 0; i < N; i++)
+                {
+                    // Desglosamos la operación para evitar el desbordamiento (overflow) de memoria con números grandes
+                    long parteA = (a * ((xi * xi) % m)) % m;
+                    long parteB = (b * xi) % m;
+                    long siguienteX = (parteA + parteB + c) % m;
+
+                    double ri = (double)siguienteX / (m - 1);
+
+                    // Imprimimos el resultado tabulado
+                    Console.WriteLine($" {i + 1} \t {siguienteX} \t\t {ri:F5}");
+
+                    xi = siguienteX;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nOcurrió un error: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPresiona cualquier tecla para volver al menú...");
+            Console.ReadKey();
+        }
+
+        static void EjecutarBlumBlumShub()
+        {
+            Console.Clear();
+            Console.WriteLine("--- ALGORITMO DE BLUM, BLUM Y SHUB (BBS) ---");
+
+            try
+            {
+                long p = PedirValor("Ingresa el número primo 'p' (congruente a 3 mod 4): ");
+                long q = PedirValor("Ingresa el número primo 'q' (congruente a 3 mod 4): ");
+                long s = PedirValor("Ingresa la semilla 's' (primo relativo de p*q): ");
+                int N = (int)PedirValor("Ingresa la cantidad de números a generar (N): ");
+
+                // Verificación de congruencia (criptográficamente necesario)
+                if (p % 4 != 3 || q % 4 != 3)
+                {
+                    Console.WriteLine("\n[Advertencia] p y q deberían ser congruentes con 3 mod 4 para que BBS sea seguro.");
+                    Console.WriteLine("Continuando de todos modos para fines de simulación...\n");
+                }
+
+                long n = p * q;
+                long xi = (s * s) % n; // X0 inicial
+
+                Console.WriteLine($"\nValor de n (p*q) = {n}");
+                Console.WriteLine(" i \t Xi \t\t ri");
+                Console.WriteLine("------------------------------------------------");
+
+                for (int i = 0; i < N; i++)
+                {
+                    xi = (xi * xi) % n;
+                    double ri = (double)xi / (n - 1);
+
+                    Console.WriteLine($" {i + 1} \t {xi} \t\t {ri:F5}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nOcurrió un error: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPresiona cualquier tecla para volver al menú...");
+            Console.ReadKey();
+        }
+
+        // Método auxiliar para evitar repetir código al pedir datos
+        static long PedirValor(string mensaje)
+        {
+            Console.Write(mensaje);
+            while (true)
+            {
+                if (long.TryParse(Console.ReadLine(), out long resultado))
+                {
+                    return resultado;
+                }
+                Console.Write("Entrada inválida. Ingresa un número entero: ");
+            }
         }
     }
 }
