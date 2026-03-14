@@ -512,11 +512,13 @@ namespace NumerosPseudoaleatorios
 
             try
             {
+                // Solicitud de datos básicos
                 long x0 = PedirValor("Ingresa la Semilla (X0): ");
                 long a = PedirValor("Ingresa la constante 'a': ");
                 long b = PedirValor("Ingresa la constante 'b': ");
                 long c = PedirValor("Ingresa la constante 'c': ");
                 long m = PedirValor("Ingresa el Módulo 'm': ");
+                int N = (int)PedirValor("Ingresa la cantidad a generar (-1 para detener hasta repetir): ");
 
                 if (m <= 0)
                 {
@@ -525,39 +527,49 @@ namespace NumerosPseudoaleatorios
                     return;
                 }
 
-                Console.WriteLine("\n i \t Xi \t\t ri");
-                Console.WriteLine("------------------------------------------------");
+                // Encabezados estandarizados
+                Console.WriteLine("\nRESULTADOS:");
+                Console.WriteLine("=====================================");
+                Console.WriteLine("| i  | X_i      | r_i     |");
+                Console.WriteLine("|----|----------|---------|");
 
                 long xi = x0;
-                // HashSet guardará los Xi generados para detectar el ciclo
                 HashSet<long> numerosGenerados = new HashSet<long>();
-                numerosGenerados.Add(xi); // Agregamos la semilla inicial por si el ciclo vuelve a ella
+                numerosGenerados.Add(xi);
 
                 int i = 0;
-                while (true)
+                // Condición: Correr mientras N sea -1 (infinito) o el contador sea menor a N
+                while (N == -1 || i < N)
                 {
+                    // Fórmula: X_{i+1} = (aX_i^2 + bX_i + c) mod m
                     long parteA = (a * ((xi * xi) % m)) % m;
                     long parteB = (b * xi) % m;
                     long siguienteX = (parteA + parteB + c) % m;
 
+                    // Cálculo de ri
                     double ri = (double)siguienteX / (m - 1);
 
-                    // 1. CONDICIÓN DE PARADA: Revisamos si el número ya existe
+                    // Condición de parada por repetición
                     if (numerosGenerados.Contains(siguienteX))
                     {
-                        Console.WriteLine("------------------------------------------------");
+                        Console.WriteLine("=====================================");
                         Console.WriteLine($"[!] FIN DEL CICLO: El número X = {siguienteX} se repitió en la iteración {i + 1}.");
-                        Console.WriteLine($"Periodo del generador: {i} números únicos.");
-                        break; // Rompe el ciclo while
+                        Console.WriteLine($"Total de números únicos generados: {i}");
+                        break;
                     }
 
-                    // 2. FORMATO A 4 DECIMALES: Usamos {ri:F4} y mostramos Xi y ri
-                    Console.WriteLine($" {i + 1} \t {siguienteX} \t\t {ri:F4}");
+                    // Impresión estandarizada
+                    Console.WriteLine($"| {i + 1,-2} | {siguienteX,-8} | {ri,-7:F4} |");
 
-                    // Guardamos el número nuevo y preparamos la siguiente iteración
                     numerosGenerados.Add(siguienteX);
                     xi = siguienteX;
                     i++;
+                }
+
+                if (N != -1 && i == N)
+                {
+                    Console.WriteLine("=====================================");
+                    Console.WriteLine($"[!] FIN: Se alcanzó la cantidad solicitada ({N} números).");
                 }
             }
             catch (Exception ex)
@@ -576,46 +588,59 @@ namespace NumerosPseudoaleatorios
 
             try
             {
-                long p = PedirValor("Ingresa el número primo 'p' (congruente a 3 mod 4): ");
-                long q = PedirValor("Ingresa el número primo 'q' (congruente a 3 mod 4): ");
-                long s = PedirValor("Ingresa la semilla 's' (primo relativo de p*q): ");
+                // De acuerdo al PDF, BBS es una simplificación del cuadrático con a=1, b=0, c=0.
+                long x0 = PedirValor("Ingresa la Semilla (X0): ");
+                long m = PedirValor("Ingresa el Módulo 'm': ");
+                int N = (int)PedirValor("Ingresa la cantidad a generar (-1 para detener hasta repetir): ");
 
-                if (p % 4 != 3 || q % 4 != 3)
+                if (m <= 0)
                 {
-                    Console.WriteLine("\n[Advertencia] p y q deberían ser congruentes con 3 mod 4 para que BBS sea seguro.\n");
+                    Console.WriteLine("Error: El módulo 'm' debe ser mayor a 0.");
+                    Console.ReadKey();
+                    return;
                 }
 
-                long n = p * q;
-                long xi = (s * s) % n; // Calculamos X0
+                // Encabezados estandarizados
+                Console.WriteLine("\nRESULTADOS:");
+                Console.WriteLine("=====================================");
+                Console.WriteLine("| i  | X_i      | r_i     |");
+                Console.WriteLine("|----|----------|---------|");
 
+                long xi = x0;
                 HashSet<long> numerosGenerados = new HashSet<long>();
                 numerosGenerados.Add(xi);
 
-                Console.WriteLine($"\nValor de n (p*q) = {n}");
-                Console.WriteLine(" i \t Xi \t\t ri");
-                Console.WriteLine("------------------------------------------------");
-
                 int i = 0;
-                while (true)
+                // Condición: Correr mientras N sea -1 (infinito) o el contador sea menor a N
+                while (N == -1 || i < N)
                 {
-                    long siguienteX = (xi * xi) % n;
-                    double ri = (double)siguienteX / (n - 1);
+                    // Fórmula simplificada del PDF: X_{i+1} = (X_i^2) mod m
+                    long siguienteX = (xi * xi) % m;
 
-                    // 1. CONDICIÓN DE PARADA
+                    // Cálculo de ri
+                    double ri = (double)siguienteX / (m - 1);
+
+                    // Condición de parada por repetición
                     if (numerosGenerados.Contains(siguienteX))
                     {
-                        Console.WriteLine("------------------------------------------------");
+                        Console.WriteLine("=====================================");
                         Console.WriteLine($"[!] FIN DEL CICLO: El número X = {siguienteX} se repitió en la iteración {i + 1}.");
-                        Console.WriteLine($"Periodo del generador: {i} números únicos.");
+                        Console.WriteLine($"Total de números únicos generados: {i}");
                         break;
                     }
 
-                    // 2. FORMATO A 4 DECIMALES
-                    Console.WriteLine($" {i + 1} \t {siguienteX} \t\t {ri:F4}");
+                    // Impresión estandarizada
+                    Console.WriteLine($"| {i + 1,-2} | {siguienteX,-8} | {ri,-7:F4} |");
 
                     numerosGenerados.Add(siguienteX);
                     xi = siguienteX;
                     i++;
+                }
+
+                if (N != -1 && i == N)
+                {
+                    Console.WriteLine("=====================================");
+                    Console.WriteLine($"[!] FIN: Se alcanzó la cantidad solicitada ({N} números).");
                 }
             }
             catch (Exception ex)
