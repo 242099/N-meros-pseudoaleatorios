@@ -276,9 +276,10 @@ namespace NumerosPseudoaleatorios
 
         static void AlgoritmoCongruencialLinealObtencionDatos()
         {
+            Console.Clear();
             verificar = true;
             numerosUnicos.Clear();
-            Console.WriteLine("---Algoritmo Congruencial Lineal---");
+            Console.WriteLine("=== Algoritmo Congruencial Lineal ===");
             int cantNum = (int)datos("¿Qué cantidad de números deseas generar?: ");
             Console.WriteLine("Ingresa los siguientes valores (Solo enteros positivos): ");
             long x0 = datos("x0: ");
@@ -288,32 +289,38 @@ namespace NumerosPseudoaleatorios
 
             var numAleatoriosACL = AlgoritmoLineal(cantNum, x0, k, g, c);
 
+            Console.WriteLine("RESULTADOS:");
+            Console.WriteLine("========================");
+            Console.WriteLine("| i | X_i |   r_i   |");
+            Console.WriteLine("|---|-----|---------|");
+
             if (verificar == true)
             {
-                Console.WriteLine("Números x y r generados:");
                 for (int i = 0; i < cantNum; i++)
                 {
                     //Reducimos los decimales a 4 en los números aleatorios r
                     double truncarNum_r = Math.Truncate(numAleatoriosACL.Item2[i] * 10000) / 10000;
-                    Console.WriteLine("X{0} = {1} -- r{2} = {3}", i + 1, numAleatoriosACL.Item1[i], i + 1, truncarNum_r);
+                    Console.WriteLine($"| {i + 1,-1} | {numAleatoriosACL.Item1[i],-3} | {truncarNum_r,-7} | ");
                 }
             }
             else
             {
-                Console.WriteLine("HA OCURRIDO UN PROBLEMA: No se han podido generar los números pseudoaleatorios requeridos." +
-                    "\nA continuación se muestran los números x y r que se pudieron crear sin repetir ninguno valor, y sin salirse del rango establecido para los números r [0 a 1].");
                 for (int i = 0; i < numAleatoriosACL.Item3; i++)
                 {
                     double truncarNum_r = Math.Truncate(numAleatoriosACL.Item2[i] * 10000) / 10000;
-                    Console.WriteLine("X{0} = {1} -- r{2} = {3}", i + 1, numAleatoriosACL.Item1[i], i + 1, truncarNum_r);
+                    Console.WriteLine($"| {i + 1,-1} | {numAleatoriosACL.Item1[i],-3} | {truncarNum_r,-7} | ");
                 }
-                Console.WriteLine("Intente ingresando otros valores.");
             }
+            Console.WriteLine("========================");
+            Console.WriteLine($"\nTotal: {numAleatoriosACL.Item3} de {cantNum}");
+            Console.WriteLine("\nPresiona cualquier tecla...");
+            Console.ReadKey();
             numerosUnicos.Clear();
             return;
         }
 
-        static Tuple<double[], double[], int> AlgoritmoLineal(int cantidadNumAl, long x0, long k, long g, long c)
+        static Tuple<double[], double[], int> AlgoritmoLineal(int cantidadNumAl,
+            long x0, long k, long g, long c)
         {
 
             double[] numAleatorios = new double[cantidadNumAl];
@@ -321,6 +328,7 @@ namespace NumerosPseudoaleatorios
             int numCreadosConExito = 0;
             long m = (long)Math.Pow(2, g);
             long a = 1 + 4 * k;
+            Console.WriteLine("a = {0}, m = {1}\n", a, m);
 
             for (int i = 0; i < cantidadNumAl; i++)
             {
