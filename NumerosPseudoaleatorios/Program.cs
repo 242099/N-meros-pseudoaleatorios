@@ -105,56 +105,12 @@ namespace NumerosPseudoaleatorios
 
                     case 2:
                         Console.WriteLine("--- Configuración del Algoritmo Congruencial Multiplicativo ---");
-
-                        Console.Write("Ingrese la semilla (X0) - Debe ser impar: ");
-                        int x0 = int.Parse(Console.ReadLine());
-
-                        Console.Write("Ingrese la constante multiplicativa (a): ");
-                        int a = int.Parse(Console.ReadLine());
-
-                        Console.Write("Ingrese el módulo (m): ");
-                        int m = int.Parse(Console.ReadLine());
-
-                        Console.Write("¿Cuántos números desea generar? (cantidad): ");
-                        int cantidad = int.Parse(Console.ReadLine());
-
-                        Console.WriteLine("\n--------------------------------------------------------------");
-
-                        // Ejecutar el método con los valores ingresados
-                        AlgoritmoCongruencialMultiplicativo(x0, a, m, cantidad);
+                        AlgoritmoCongruencialMultiplicativo();
                         break;
 
                     case 3:
-                        
-                        Console.WriteLine("--- Configuración del Algoritmo Congruencial Aditivo ---");
 
-                        // 1. Solicitar la secuencia inicial (X1, X2, ..., Xn)
-                        Console.WriteLine("Ingrese la secuencia inicial (ejemplo: 65, 89, 98, 03, 69):");
-                        string entrada = Console.ReadLine();
-
-                        // Convertimos el string a una lista de enteros
-                        List<int> secuencia = entrada.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                                                     .Select(int.Parse)
-                                                     .ToList();
-
-                        // 2. Solicitar el módulo m
-                        Console.Write("Ingrese el valor del módulo (m): ");
-                        int modulo_m = int.Parse(Console.ReadLine());
-
-                        // 3. Solicitar la cantidad de números a generar
-                        Console.Write("¿Cuántos números adicionales desea generar?: ");
-                        int cantidad2 = int.Parse(Console.ReadLine());
-
-                        Console.WriteLine("\n--------------------------------------------------------------");
-
-                        // Ejecutar el método original
-                        AlgoritmoCongruencialAditivo(secuencia, modulo_m, cantidad2);
-                        break;
-                    case 0:
-                        Console.WriteLine("Volviendo al menú anterior.");
-                        break;
-                    default:
-                        Console.WriteLine("Ingrese un valor válido");
+                        AlgoritmoCongruencialAditivo();
                         break;
                 }
 
@@ -352,523 +308,1000 @@ namespace NumerosPseudoaleatorios
             return Tuple.Create(xGenerados, numAleatorios, numCreadosConExito);
         }
 
-        //Método Multiplicador Constante
         static void MultiplicadorConstante()
         {
             Console.Clear();
             try
             {
-                Console.WriteLine("=== MÉTODO MULTIPLICADOR CONSTANTE ===\n");
+                Console.WriteLine("=== MULTIPLICADOR CONSTANTE ===\n");
 
-                // ========== DECLARACIÓN DE VARIABLES ==========
-                // X = semilla, a = constante (ambas de 4 dígitos)
                 long X = 0, a = 0;
 
-                // Validar semilla
                 try
                 {
-                    Console.Write("Semilla inicial X0 (4 dígitos): ");
-                    X = long.Parse(Console.ReadLine());//Convierte texto a número
+                    Console.Write("Semilla X0 (4 dígitos): ");
+                    X = long.Parse(Console.ReadLine());
                 }
-                catch (FormatException)// Error si el usuario escribe letras o símbolos
+                catch
                 {
-                    Console.WriteLine("Error: Debe ingresar un número válido para la semilla");
-                    Console.ReadKey();
-                    return;// Sale del método y regresa al menú
-                }
-                catch (OverflowException)// Error si el número es demasiado grande
-                {
-                    Console.WriteLine("Error: La semilla es demasiado grande");
+                    Console.WriteLine("Error: Número inválido");
                     Console.ReadKey();
                     return;
                 }
 
-                // Validar constante
                 try
                 {
                     Console.Write("Constante a (4 dígitos): ");
                     a = long.Parse(Console.ReadLine());
                 }
-                catch (FormatException)
+                catch
                 {
-                    Console.WriteLine("Error: Debe ingresar un número válido para la constante");
+                    Console.WriteLine("Error: Número inválido");
                     Console.ReadKey();
                     return;
                 }
-                catch (OverflowException)
-                {
-                    Console.WriteLine("Error: La constante es demasiado grande");
-                    Console.ReadKey();
-                    return;
-                }
-                // ========== VALIDACIÓN DE 4 DÍGITOS ==========
-                // Verifica que ambos números tengan exactamente 4 dígitos (1000 a 9999)
+
                 if (X < 1000 || X > 9999 || a < 1000 || a > 9999)
                 {
-                    Console.WriteLine("Error: Deben ser números de 4 dígitos (1000 - 9999)");
+                    Console.WriteLine("Error: Ambos deben ser de 4 dígitos");
                     Console.ReadKey();
                     return;
                 }
 
-                Console.WriteLine("\nGenerando números...\n");
+                int cantidadNumeros = 0;
+                try
+                {
+                    Console.Write("\n¿Cuántos números generar? ");
+                    cantidadNumeros = int.Parse(Console.ReadLine());
 
-                // Limpiar HashSet para este método
+                    if (cantidadNumeros <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
                 numerosUnicos.Clear();
                 verificar = true;
 
-                // Encabezados
                 Console.WriteLine("RESULTADOS:");
                 Console.WriteLine("===========================================");
                 Console.WriteLine("| i | Y        | X_i+1 | r_i   |");
                 Console.WriteLine("|---|----------|-------|-------|");
 
-                // Variable para contar (FUERA del ciclo)
-                // Esta variable lleva la cuenta de cuántos números se generaron realment
                 int totalGenerados = 0;
 
-                // Generar 50 números
-                for (int i = 0; i < 50; i++)
+                for (int i = 0; i < cantidadNumeros; i++)
                 {
                     try
                     {
-                        // PASO 1: Calcular Y = a * X
                         long Y = a * X;
-
-                        // PASO 2: Obtener los 4 dígitos del centro
                         string Ytexto = Y.ToString().PadLeft(8, '0');
-
-                        if (Ytexto.Length < 8) // Verifica que tenga al menos 8 dígitos
-
-                        {
-                            throw new Exception("Error al formatear el número");
-                        }
-
-                        //Toma los 4 digitos del centro
                         string centro = Ytexto.Substring(2, 4);
-                        long nuevoX = long.Parse(centro);//convierte a número
-
-                        // PASO 3: Calcular r = 0.dígitos (4 decimales)
+                        long nuevoX = long.Parse(centro);
                         string rTexto = "0." + nuevoX.ToString("D4");
                         double r = double.Parse(rTexto);
                         r = Math.Round(r, 4);
 
-                        // Validar que r esté entre 0 y 1 usando el verificador
                         verificar = verificador(r);
 
                         if (verificar == true)
                         {
-                            // Mostrar resultado
                             Console.WriteLine($"| {i,-2} | {Y,-8} | {nuevoX,-5} | {r,-5:F4} |");
-
-                            // Actualizar X y contador
                             X = nuevoX;
                             totalGenerados++;
                         }
                         else
                         {
-                            Console.WriteLine($"\nCiclo terminado en iteración {i} por repetición o valor fuera de rango");
+                            Console.WriteLine($"\nSe detuvo en iteración {i} por repetición");
                             break;
                         }
                     }
-                    catch (ArgumentOutOfRangeException)
+                    catch
                     {
-                        Console.WriteLine($"Error: Problema al extraer dígitos en iteración {i}");
-                        break;
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine($"Error: Problema al convertir números en iteración {i}");
-                        break;
-                    }
-                    catch (OverflowException)
-                    {
-                        Console.WriteLine($"Error: Desbordamiento en iteración {i}");
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error inesperado en iteración {i}: {ex.Message}");
+                        Console.WriteLine($"\nError en iteración {i}");
                         break;
                     }
                 }
 
                 Console.WriteLine("===========================================");
-                Console.WriteLine($"\nTotal: {totalGenerados} números generados");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadNumeros}");
 
-                if (totalGenerados < 50)
-                {
-                    Console.WriteLine($"Nota: Solo se generaron {totalGenerados} de 50 números debido a repetición o error");
-                }
-
-                // Limpiar HashSet para el siguiente método
                 numerosUnicos.Clear();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nError general: {ex.Message}");
+                Console.WriteLine($"\nError: {ex.Message}");
             }
             finally
             {
-                Console.WriteLine("\nPresiona cualquier tecla para continuar...");
+                Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
         }
+
         static void EjecutarCongruencialCuadratico()
         {
             Console.Clear();
-            Console.WriteLine("--- ALGORITMO CONGRUENCIAL CUADRÁTICO ---");
-
             try
             {
-                long x0 = PedirValor("Ingresa la Semilla (X0): ");
-                long a = PedirValor("Ingresa la constante 'a': ");
-                long b = PedirValor("Ingresa la constante 'b': ");
-                long c = PedirValor("Ingresa la constante 'c': ");
-                long m = PedirValor("Ingresa el Módulo 'm': ");
+                Console.WriteLine("=== CONGRUENCIAL CUADRÁTICO ===\n");
 
-                if (m <= 0)
+                long x0 = 0, a = 0, b = 0, c = 0, g = 0;
+
+                try
                 {
-                    Console.WriteLine("Error: El módulo 'm' debe ser mayor a 0.");
+                    Console.Write("Semilla X0: ");
+                    x0 = long.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
                     Console.ReadKey();
                     return;
                 }
 
-                Console.WriteLine("\n i \t Xi \t\t ri");
-                Console.WriteLine("------------------------------------------------");
+                try
+                {
+                    Console.Write("Constante a (par): ");
+                    a = long.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                try
+                {
+                    Console.Write("Constante b: ");
+                    b = long.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                try
+                {
+                    Console.Write("Constante c (impar): ");
+                    c = long.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                try
+                {
+                    Console.Write("Valor de g: ");
+                    g = long.Parse(Console.ReadLine());
+
+                    if (g <= 0)
+                    {
+                        Console.WriteLine("Error: g debe ser positivo");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                long m = (long)Math.Pow(2, g);
+                Console.WriteLine($"\nm = {m}");
+
+                int cantidadNumeros = 0;
+                try
+                {
+                    Console.Write("¿Cuántos números generar? ");
+                    cantidadNumeros = int.Parse(Console.ReadLine());
+
+                    if (cantidadNumeros <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
+                Program.numerosUnicos.Clear();
+                Program.verificar = true;
+
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("========================");
+                Console.WriteLine("| i | X_i | r_i   |");
+                Console.WriteLine("|---|-----|-------|");
 
                 long xi = x0;
-                // HashSet guardará los Xi generados para detectar el ciclo
-                HashSet<long> numerosGenerados = new HashSet<long>();
-                numerosGenerados.Add(xi); // Agregamos la semilla inicial por si el ciclo vuelve a ella
+                int totalGenerados = 0;
 
-                int i = 0;
-                while (true)
+                for (int i = 1; i <= cantidadNumeros; i++)
                 {
-                    long parteA = (a * ((xi * xi) % m)) % m;
-                    long parteB = (b * xi) % m;
-                    long siguienteX = (parteA + parteB + c) % m;
-
-                    double ri = (double)siguienteX / (m - 1);
-
-                    // 1. CONDICIÓN DE PARADA: Revisamos si el número ya existe
-                    if (numerosGenerados.Contains(siguienteX))
+                    try
                     {
-                        Console.WriteLine("------------------------------------------------");
-                        Console.WriteLine($"[!] FIN DEL CICLO: El número X = {siguienteX} se repitió en la iteración {i + 1}.");
-                        Console.WriteLine($"Periodo del generador: {i} números únicos.");
-                        break; // Rompe el ciclo while
+                        long parteA = (a * ((xi * xi) % m)) % m;
+                        long parteB = (b * xi) % m;
+                        long siguienteX = (parteA + parteB + c) % m;
+
+                        double ri = (double)siguienteX / (m - 1);
+                        ri = Math.Round(ri, 4);
+
+                        Program.verificar = Program.verificador(ri);
+
+                        if (Program.verificar == true)
+                        {
+                            Console.WriteLine($"| {i,-2} | {siguienteX,-3} | {ri,-5:F4} |");
+                            xi = siguienteX;
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nSe detuvo en iteración {i}");
+                            break;
+                        }
                     }
-
-                    // 2. FORMATO A 4 DECIMALES: Usamos {ri:F4} y mostramos Xi y ri
-                    Console.WriteLine($" {i + 1} \t {siguienteX} \t\t {ri:F4}");
-
-                    // Guardamos el número nuevo y preparamos la siguiente iteración
-                    numerosGenerados.Add(siguienteX);
-                    xi = siguienteX;
-                    i++;
+                    catch
+                    {
+                        Console.WriteLine($"\nError en iteración {i}");
+                        break;
+                    }
                 }
+
+                Console.WriteLine("========================");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadNumeros}");
+
+                Program.numerosUnicos.Clear();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nOcurrió un error: {ex.Message}");
+                Console.WriteLine($"\nError: {ex.Message}");
             }
-
-            Console.WriteLine("\nPresiona cualquier tecla para volver al menú...");
-            Console.ReadKey();
+            finally
+            {
+                Console.WriteLine("\nPresiona cualquier tecla...");
+                Console.ReadKey();
+            }
         }
 
         static void EjecutarBlumBlumShub()
         {
             Console.Clear();
-            Console.WriteLine("--- ALGORITMO DE BLUM, BLUM Y SHUB (BBS) ---");
-
             try
             {
-                long p = PedirValor("Ingresa el número primo 'p' (congruente a 3 mod 4): ");
-                long q = PedirValor("Ingresa el número primo 'q' (congruente a 3 mod 4): ");
-                long s = PedirValor("Ingresa la semilla 's' (primo relativo de p*q): ");
+                Console.WriteLine("=== BLUM BLUM SHUB ===\n");
 
-                if (p % 4 != 3 || q % 4 != 3)
+                long x0 = 0, m = 0;
+
+                try
                 {
-                    Console.WriteLine("\n[Advertencia] p y q deberían ser congruentes con 3 mod 4 para que BBS sea seguro.\n");
+                    Console.Write("Semilla X0: ");
+                    x0 = long.Parse(Console.ReadLine());
+
+                    if (x0 <= 0)
+                    {
+                        Console.WriteLine("Error: X0 debe ser positivo");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
                 }
 
-                long n = p * q;
-                long xi = (s * s) % n; // Calculamos X0
-
-                HashSet<long> numerosGenerados = new HashSet<long>();
-                numerosGenerados.Add(xi);
-
-                Console.WriteLine($"\nValor de n (p*q) = {n}");
-                Console.WriteLine(" i \t Xi \t\t ri");
-                Console.WriteLine("------------------------------------------------");
-
-                int i = 0;
-                while (true)
+                try
                 {
-                    long siguienteX = (xi * xi) % n;
-                    double ri = (double)siguienteX / (n - 1);
+                    Console.Write("Módulo m: ");
+                    m = long.Parse(Console.ReadLine());
 
-                    // 1. CONDICIÓN DE PARADA
-                    if (numerosGenerados.Contains(siguienteX))
+                    if (m <= 0)
                     {
-                        Console.WriteLine("------------------------------------------------");
-                        Console.WriteLine($"[!] FIN DEL CICLO: El número X = {siguienteX} se repitió en la iteración {i + 1}.");
-                        Console.WriteLine($"Periodo del generador: {i} números únicos.");
+                        Console.WriteLine("Error: m debe ser positivo");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                int cantidadNumeros = 0;
+                try
+                {
+                    Console.Write("\n¿Cuántos números generar? ");
+                    cantidadNumeros = int.Parse(Console.ReadLine());
+
+                    if (cantidadNumeros <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
+                Program.numerosUnicos.Clear();
+                Program.verificar = true;
+
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("========================");
+                Console.WriteLine("| i | X_i | r_i   |");
+                Console.WriteLine("|---|-----|-------|");
+
+                long xi = x0;
+                int totalGenerados = 0;
+
+                for (int i = 1; i <= cantidadNumeros; i++)
+                {
+                    try
+                    {
+                        long siguienteX = (xi * xi) % m;
+                        double ri = (double)siguienteX / (m - 1);
+                        ri = Math.Round(ri, 4);
+
+                        Program.verificar = Program.verificador(ri);
+
+                        if (Program.verificar == true)
+                        {
+                            Console.WriteLine($"| {i,-2} | {siguienteX,-3} | {ri,-5:F4} |");
+                            xi = siguienteX;
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nSe detuvo en iteración {i}");
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"\nError en iteración {i}");
                         break;
                     }
-
-                    // 2. FORMATO A 4 DECIMALES
-                    Console.WriteLine($" {i + 1} \t {siguienteX} \t\t {ri:F4}");
-
-                    numerosGenerados.Add(siguienteX);
-                    xi = siguienteX;
-                    i++;
                 }
+
+                Console.WriteLine("========================");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadNumeros}");
+
+                Program.numerosUnicos.Clear();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nOcurrió un error: {ex.Message}");
+                Console.WriteLine($"\nError: {ex.Message}");
             }
-
-            Console.WriteLine("\nPresiona cualquier tecla para volver al menú...");
-            Console.ReadKey();
-        }
-
-        // Método auxiliar para evitar repetir código al pedir datos
-        static long PedirValor(string mensaje)
-        {
-            Console.Write(mensaje);
-            while (true)
+            finally
             {
-                if (long.TryParse(Console.ReadLine(), out long resultado))
-                {
-                    return resultado;
-                }
-                Console.Write("Entrada inválida. Ingresa un número entero: ");
+                Console.WriteLine("\nPresiona cualquier tecla...");
+                Console.ReadKey();
             }
         }
+
         static void CuadradosMedios()
         {
-            Console.WriteLine("--- Algoritmo de Cuadrados Medios ---");
-
-            Console.Write("Ingresa la semilla inicial (X0) de 4 dígitos: ");
-            string entrada = Console.ReadLine();
-            int semilla = Convert.ToInt32(entrada);
-
-            List<int> numerosGenerados = new List<int>();
-
-            int x = semilla;
-            int contador = 1;
-            bool seRepite = false;
-
-            Console.WriteLine("\n n \t X \t r");
-            Console.WriteLine("-------------------------");
-
-            // 2. El ciclo termina cuando se repite un número
-            while (seRepite == false)
+            Console.Clear();
+            try
             {
-                // Elevar al cuadrado (usamos long porque el cuadrado de 4 dígitos puede ser grande)
-                long cuadrado = (long)x * x;
+                Console.WriteLine("=== CUADRADOS MEDIOS ===\n");
 
-                // Convertir a texto
-                string cuadradoTexto = cuadrado.ToString();
+                int semilla = 0;
 
-                // Rellenar con ceros a la izquierda si tiene menos de 8 caracteres (estilo muy novato)
-                while (cuadradoTexto.Length < 8)
+                try
                 {
-                    cuadradoTexto = "0" + cuadradoTexto;
+                    Console.Write("Semilla X0 (4 dígitos): ");
+                    semilla = int.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
                 }
 
-                // Tomar los 4 dígitos de en medio (cortamos desde la posición 2 y tomamos 4 letras)
-                string centro = cuadradoTexto.Substring(2, 4);
-
-                // Ese texto del centro es nuestro nuevo X
-                int nuevoX = Convert.ToInt32(centro);
-
-                // Calcular el valor 'r' entre 0 y 1
-                double r = nuevoX / 10000.0;
-
-                // 3. Mostrar el X generado y el valor r (con 4 decimales)
-                Console.WriteLine(contador + " \t " + nuevoX + " \t " + r.ToString("0.0000"));
-
-                // Revisar si la lista ya contiene este número nuevo
-                if (numerosGenerados.Contains(nuevoX))
+                if (semilla < 1000 || semilla > 9999)
                 {
-                    seRepite = true; // Esto rompe el ciclo
-                    Console.WriteLine("\nEl ciclo terminó porque el número " + nuevoX + " se repitió.");
+                    Console.WriteLine("Error: Debe ser de 4 dígitos");
+                    Console.ReadKey();
+                    return;
                 }
-                else
+
+                int cantidadNumeros = 0;
+                try
                 {
-                    // Si no se repite, lo agregamos a la lista
-                    numerosGenerados.Add(nuevoX);
-                    x = nuevoX; // El nuevo X ahora es el X para la siguiente vuelta
-                    contador++;
+                    Console.Write("\n¿Cuántos números generar? ");
+                    cantidadNumeros = int.Parse(Console.ReadLine());
+
+                    if (cantidadNumeros <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
                 }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
+                numerosUnicos.Clear();
+                verificar = true;
+
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("===========================================");
+                Console.WriteLine("| i | Cuadrado  | X_i+1 | r_i   |");
+                Console.WriteLine("|---|-----------|-------|-------|");
+
+                int x = semilla;
+                int totalGenerados = 0;
+
+                for (int i = 0; i < cantidadNumeros; i++)
+                {
+                    try
+                    {
+                        long cuadrado = (long)x * x;
+                        string cuadradoTexto = cuadrado.ToString().PadLeft(8, '0');
+                        string centro = cuadradoTexto.Substring(2, 4);
+                        int nuevoX = int.Parse(centro);
+                        string rTexto = "0." + nuevoX.ToString("D4");
+                        double r = double.Parse(rTexto);
+                        r = Math.Round(r, 4);
+
+                        verificar = verificador(r);
+
+                        if (verificar == true)
+                        {
+                            Console.WriteLine($"| {i,-2} | {cuadrado,-9} | {nuevoX,-5} | {r,-5:F4} |");
+                            x = nuevoX;
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nSe detuvo en iteración {i}");
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"\nError en iteración {i}");
+                        break;
+                    }
+                }
+
+                Console.WriteLine("===========================================");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadNumeros}");
+
+                numerosUnicos.Clear();
             }
-
-            // 4. Validar que la corrida sea de mínimo 50 números
-            int totalGenerados = contador - 1; // Restamos 1 porque el contador sumó antes de repetir
-
-            Console.WriteLine("\n--- Resumen ---");
-            if (totalGenerados < 50)
+            catch (Exception ex)
             {
-                Console.WriteLine("La corrida fue de " + totalGenerados + " números. NO cumple el mínimo de 50.");
-                Console.WriteLine("Nota: El método de cuadrados medios degenera rápido. ¡Intenta con otra semilla (como 2113 o 5634)!");
+                Console.WriteLine($"\nError: {ex.Message}");
             }
-            else
+            finally
             {
-                Console.WriteLine("¡Excelente! La corrida fue de " + totalGenerados + " números. Cumple el mínimo de 50.");
+                Console.WriteLine("\nPresiona cualquier tecla...");
+                Console.ReadKey();
             }
-
-            Console.ReadLine();
         }
+
         static void ProductosMedios()
         {
-            Console.WriteLine("--- Algoritmo de Productos Medios ---");
-
-            // 1. Solicitar los datos iniciales (necesitamos dos semillas)
-            Console.Write("Ingresa la primera semilla (X0) de 4 dígitos: ");
-            string entrada1 = Console.ReadLine();
-            int x0 = Convert.ToInt32(entrada1);
-
-            Console.Write("Ingresa la segunda semilla (X1) de 4 dígitos: ");
-            string entrada2 = Console.ReadLine();
-            int x1 = Convert.ToInt32(entrada2);
-
-            // Lista para guardar el historial y checar si se repite
-            List<int> numerosGenerados = new List<int>();
-
-            int contador = 1;
-            bool seRepite = false;
-
-            // Encabezado de la tabla
-            Console.WriteLine("\n n \t X \t r");
-            Console.WriteLine("-------------------------");
-
-            // 2. El ciclo termina cuando se repite un número
-            while (seRepite == false)
+            Console.Clear();
+            try
             {
-                // Multiplicar x0 por x1 (usamos long por si el número se hace muy grande)
-                long producto = (long)x0 * x1;
+                Console.WriteLine("=== PRODUCTOS MEDIOS ===\n");
 
-                // Convertir el resultado a texto
-                string productoTexto = producto.ToString();
+                int x0 = 0, x1 = 0;
 
-                // Rellenar con ceros a la izquierda hasta que tenga 8 caracteres
-                while (productoTexto.Length < 8)
+                try
                 {
-                    productoTexto = "0" + productoTexto;
+                    Console.Write("Primera semilla X0 (4 dígitos): ");
+                    x0 = int.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
                 }
 
-                // Tomar los 4 dígitos de en medio (empezamos en la posición 2 y cortamos 4)
-                string centro = productoTexto.Substring(2, 4);
-
-                // Ese texto del centro es nuestro nuevo número generado (X)
-                int nuevoX = Convert.ToInt32(centro);
-
-                // Calcular el valor 'r' entre 0 y 1
-                double r = nuevoX / 10000.0;
-
-                // 3. Mostrar el X generado y el valor r (con 4 decimales)
-                Console.WriteLine(contador + " \t " + nuevoX + " \t " + r.ToString("0.0000"));
-
-                // Checar si la lista ya tiene este número nuevo
-                if (numerosGenerados.Contains(nuevoX))
+                try
                 {
-                    seRepite = true; // Cambiamos la variable para salir del ciclo while
-                    Console.WriteLine("\nEl ciclo terminó porque el número " + nuevoX + " se repitió.");
+                    Console.Write("Segunda semilla X1 (4 dígitos): ");
+                    x1 = int.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                if (x0 < 1000 || x0 > 9999 || x1 < 1000 || x1 > 9999)
+                {
+                    Console.WriteLine("Error: Ambas deben ser de 4 dígitos");
+                    Console.ReadKey();
+                    return;
+                }
+
+                int cantidadNumeros = 0;
+                try
+                {
+                    Console.Write("\n¿Cuántos números generar? ");
+                    cantidadNumeros = int.Parse(Console.ReadLine());
+
+                    if (cantidadNumeros <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
+                numerosUnicos.Clear();
+                verificar = true;
+
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("===========================================");
+                Console.WriteLine("| i | Producto  | X_i+1 | r_i   |");
+                Console.WriteLine("|---|-----------|-------|-------|");
+
+                int totalGenerados = 0;
+                int xActual = x0;
+                int xSiguiente = x1;
+
+                for (int i = 0; i < cantidadNumeros; i++)
+                {
+                    try
+                    {
+                        long producto = (long)xActual * xSiguiente;
+                        string productoTexto = producto.ToString().PadLeft(8, '0');
+                        string centro = productoTexto.Substring(2, 4);
+                        int nuevoX = int.Parse(centro);
+                        string rTexto = "0." + nuevoX.ToString("D4");
+                        double r = double.Parse(rTexto);
+                        r = Math.Round(r, 4);
+
+                        verificar = verificador(r);
+
+                        if (verificar == true)
+                        {
+                            Console.WriteLine($"| {i,-2} | {producto,-9} | {nuevoX,-5} | {r,-5:F4} |");
+                            xActual = xSiguiente;
+                            xSiguiente = nuevoX;
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nSe detuvo en iteración {i}");
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"\nError en iteración {i}");
+                        break;
+                    }
+                }
+
+                Console.WriteLine("===========================================");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadNumeros}");
+
+                numerosUnicos.Clear();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nError: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("\nPresiona cualquier tecla...");
+                Console.ReadKey();
+            }
+        }
+
+        public static void AlgoritmoCongruencialAditivo()
+        {
+            Console.Clear();
+            try
+            {
+                Console.WriteLine("=== CONGRUENCIAL ADITIVO ===\n");
+
+                Console.WriteLine("Secuencia inicial (separada por comas):");
+                Console.Write("Ejemplo: 65,89,98,03,69 : ");
+                string entrada = Console.ReadLine();
+
+                List<int> secuenciaInicial = entrada.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(int.Parse)
+                                                   .ToList();
+
+                if (secuenciaInicial.Count < 2)
+                {
+                    Console.WriteLine("Error: Mínimo 2 números");
+                    Console.ReadKey();
+                    return;
+                }
+
+                int m = 0;
+                try
+                {
+                    Console.Write("\nMódulo m: ");
+                    m = int.Parse(Console.ReadLine());
+
+                    if (m <= 0)
+                    {
+                        Console.WriteLine("Error: m positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                int cantidadAGenerar = 0;
+                try
+                {
+                    Console.Write("¿Cuántos números generar? ");
+                    cantidadAGenerar = int.Parse(Console.ReadLine());
+
+                    if (cantidadAGenerar <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
+                Program.numerosUnicos.Clear();
+                Program.verificar = true;
+
+                Console.WriteLine("Secuencia: " + string.Join(", ", secuenciaInicial));
+                Console.WriteLine($"n = {secuenciaInicial.Count}, m = {m}\n");
+
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("========================");
+                Console.WriteLine("| i | X_i | r_i   |");
+                Console.WriteLine("|---|-----|-------|");
+
+                List<int> X = new List<int>(secuenciaInicial);
+                int n = X.Count;
+                int totalGenerados = 0;
+
+                for (int i = 0; i < cantidadAGenerar; i++)
+                {
+                    try
+                    {
+                        int x_anterior = X[X.Count - 1];
+                        int x_n_posiciones_atras = X[i];
+                        int nuevo_X = (x_anterior + x_n_posiciones_atras) % m;
+                        double nuevo_r = (double)nuevo_X / (m - 1);
+                        nuevo_r = Math.Round(nuevo_r, 4);
+
+                        Program.verificar = Program.verificador(nuevo_r);
+
+                        if (Program.verificar == true)
+                        {
+                            int indice_X = n + i + 1;
+                            Console.WriteLine($"| {indice_X,-2} | {nuevo_X,-3} | {nuevo_r,-5:F4} |");
+                            X.Add(nuevo_X);
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nSe detuvo en iteración {i + 1}");
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"\nError en iteración {i + 1}");
+                        break;
+                    }
+                }
+
+                Console.WriteLine("========================");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadAGenerar}");
+
+                Program.numerosUnicos.Clear();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nError: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("\nPresiona cualquier tecla...");
+                Console.ReadKey();
+            }
+        }
+
+        public static void AlgoritmoCongruencialMultiplicativo()
+        {
+            Console.Clear();
+            try
+            {
+                Console.WriteLine("=== CONGRUENCIAL MULTIPLICATIVO ===\n");
+
+                int x0 = 0, a = 0, m = 0;
+                int opcionCalculo = 0;
+
+                try
+                {
+                    Console.Write("Semilla X0 (impar): ");
+                    x0 = int.Parse(Console.ReadLine());
+
+                    if (x0 % 2 == 0)
+                    {
+                        Console.WriteLine("Error: X0 debe ser impar");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nOpciones:");
+                Console.WriteLine("1. Calcular a y m con k y g");
+                Console.WriteLine("2. Ingresar a y m directamente");
+                Console.Write("Elige (1 o 2): ");
+
+                try
+                {
+                    opcionCalculo = int.Parse(Console.ReadLine());
+
+                    if (opcionCalculo != 1 && opcionCalculo != 2)
+                    {
+                        Console.WriteLine("Error: Opción no válida");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                if (opcionCalculo == 1)
+                {
+                    int k = 0, g = 0;
+
+                    try
+                    {
+                        Console.Write("\nk: ");
+                        k = int.Parse(Console.ReadLine());
+
+                        if (k < 0)
+                        {
+                            Console.WriteLine("Error: k no negativo");
+                            Console.ReadKey();
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error: Número inválido");
+                        Console.ReadKey();
+                        return;
+                    }
+
+                    try
+                    {
+                        Console.Write("g: ");
+                        g = int.Parse(Console.ReadLine());
+
+                        if (g <= 0)
+                        {
+                            Console.WriteLine("Error: g positivo");
+                            Console.ReadKey();
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error: Número inválido");
+                        Console.ReadKey();
+                        return;
+                    }
+
+                    m = (int)Math.Pow(2, g);
+
+                    Console.WriteLine("\nFórmula para a:");
+                    Console.WriteLine("1. a = 3 + 8k");
+                    Console.WriteLine("2. a = 5 + 8k");
+                    Console.Write("Elige (1 o 2): ");
+
+                    int opcionA = int.Parse(Console.ReadLine());
+
+                    if (opcionA == 1)
+                        a = 3 + (8 * k);
+                    else
+                        a = 5 + (8 * k);
+
+                    Console.WriteLine($"\nm = {m}, a = {a}");
                 }
                 else
                 {
-                    // Si no se repite, lo guardamos en la lista
-                    numerosGenerados.Add(nuevoX);
+                    try
+                    {
+                        Console.Write("\na: ");
+                        a = int.Parse(Console.ReadLine());
 
-                    // Preparamos los valores para la siguiente vuelta
-                    x0 = x1;       // La semilla 2 pasa a ser la semilla 1
-                    x1 = nuevoX;   // El número nuevo pasa a ser la semilla 2
+                        if (a <= 0)
+                        {
+                            Console.WriteLine("Error: a positivo");
+                            Console.ReadKey();
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error: Número inválido");
+                        Console.ReadKey();
+                        return;
+                    }
 
-                    contador = contador + 1; // Sumamos 1 al contador estilo básico
+                    try
+                    {
+                        Console.Write("m: ");
+                        m = int.Parse(Console.ReadLine());
+
+                        if (m <= 0)
+                        {
+                            Console.WriteLine("Error: m positivo");
+                            Console.ReadKey();
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error: Número inválido");
+                        Console.ReadKey();
+                        return;
+                    }
                 }
+
+                int cantidadNumeros = 0;
+                try
+                {
+                    Console.Write("\n¿Cuántos números generar? ");
+                    cantidadNumeros = int.Parse(Console.ReadLine());
+
+                    if (cantidadNumeros <= 0)
+                    {
+                        Console.WriteLine("Error: Número positivo requerido");
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error: Número inválido");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.WriteLine("\nGenerando...\n");
+
+                Program.numerosUnicos.Clear();
+                Program.verificar = true;
+
+                Console.WriteLine("RESULTADOS:");
+                Console.WriteLine("=======================================");
+                Console.WriteLine("| i | Operación    | X_i | r_i   |");
+                Console.WriteLine("|---|--------------|-----|-------|");
+
+                int x_actual = x0;
+                int totalGenerados = 0;
+
+                for (int i = 1; i <= cantidadNumeros; i++)
+                {
+                    try
+                    {
+                        int nuevo_X = (a * x_actual) % m;
+                        double nuevo_r = (double)nuevo_X / (m - 1);
+                        nuevo_r = Math.Round(nuevo_r, 4);
+
+                        Program.verificar = Program.verificador(nuevo_r);
+
+                        if (Program.verificar == true)
+                        {
+                            string operacion = $"{a}*{x_actual} mod {m}";
+                            Console.WriteLine($"| {i,-2} | {operacion,-12} | {nuevo_X,-3} | {nuevo_r,-5:F4} |");
+                            x_actual = nuevo_X;
+                            totalGenerados++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\nSe detuvo en iteración {i}");
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"\nError en iteración {i}");
+                        break;
+                    }
+                }
+
+                Console.WriteLine("=======================================");
+                Console.WriteLine($"\nTotal: {totalGenerados} de {cantidadNumeros}");
+
+                Program.numerosUnicos.Clear();
             }
-
-            // 4. Validar que la corrida sea de mínimo 50 números
-            int totalGenerados = contador - 1; // Le quitamos 1 porque el contador sumó en la última vuelta
-
-            Console.WriteLine("\n--- Resumen ---");
-            if (totalGenerados < 50)
+            catch (Exception ex)
             {
-                Console.WriteLine("La corrida fue de " + totalGenerados + " números. NO cumple el mínimo de 50.");
-                Console.WriteLine("Nota: Intenta con otras semillas (por ejemplo: 5015 y 5734).");
+                Console.WriteLine($"\nError: {ex.Message}");
             }
-            else
+            finally
             {
-                Console.WriteLine("¡Excelente! La corrida fue de " + totalGenerados + " números. Cumple el mínimo de 50.");
-            }
-
-            Console.ReadLine();
-
-        }
-
-        public static void AlgoritmoCongruencialAditivo(List<int> secuenciaInicial, int m, int cantidadAGenerar)
-        {
-            // Creamos una nueva lista basada en la secuencia inicial para trabajar sobre ella
-            List<int> X = new List<int>(secuenciaInicial);
-            int n = X.Count;
-            List<double> r = new List<double>();
-
-            Console.WriteLine("Solución:\n");
-
-            for (int i = 0; i < cantidadAGenerar; i++)
-            {
-                // X_{i-1} corresponde al último elemento que tenemos guardado
-                int x_anterior = X[X.Count - 1];
-                // X_{i-n} corresponde al elemento en la posición actual del ciclo 'i'
-                int x_n_posiciones_atras = X[i];
-
-                // Ecuación: X_i = (X_{i-1} + X_{i-n}) mod m
-                int nuevo_X = (x_anterior + x_n_posiciones_atras) % m;
-                X.Add(nuevo_X);
-
-                // Ecuación: r_i = X_i / (m - 1)
-                double nuevo_r = (double)nuevo_X / (m - 1);
-                r.Add(nuevo_r);
-
-                // Índices para imprimir correctamente
-                int indice_X = n + i + 1;
-                int indice_r = i + 1;
-
-                Console.WriteLine($"X_{indice_X} = (X_{indice_X - 1} + X_{indice_X - n}) mod {m} " +
-                                  $"= ({x_anterior} + {x_n_posiciones_atras:D2}) mod {m} = {nuevo_X,-2} \t " +
-                                  $"r_{indice_r} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
-            }
-        }
-        public static void AlgoritmoCongruencialMultiplicativo(int x0, int a, int m, int cantidadAGenerar)
-        {
-            int x_actual = x0;
-            List<int> X = new List<int>();
-            List<double> r = new List<double>();
-
-            Console.WriteLine($"Parámetros iniciales: X0 = {x0}, a = {a}, m = {m}\n");
-            Console.WriteLine("Solución paso a paso:\n");
-
-            for (int i = 1; i <= cantidadAGenerar; i++)
-            {
-                // Ecuación: X_{i} = (a * X_{i-1}) mod m
-                int nuevo_X = (a * x_actual) % m;
-                X.Add(nuevo_X);
-
-                // Ecuación: r_i = X_i / (m - 1)
-                double nuevo_r = (double)nuevo_X / (m - 1);
-                r.Add(nuevo_r);
-
-                // Imprimir el proceso
-                Console.WriteLine($"X_{i} = ({a} * X_{i - 1}) mod {m} " +
-                                    $"= ({a} * {x_actual,-2}) mod {m} = {nuevo_X,-2} \t " +
-                                    $"r_{i} = {nuevo_X}/{m - 1} = {nuevo_r:F4}");
-
-                // Actualizamos la semilla para la siguiente iteración
-                x_actual = nuevo_X;
+                Console.WriteLine("\nPresiona cualquier tecla...");
+                Console.ReadKey();
             }
         }
 
