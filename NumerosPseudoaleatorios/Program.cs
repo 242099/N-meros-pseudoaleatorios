@@ -1380,7 +1380,7 @@ namespace NumerosPseudoaleatorios
 
             double limiteTablaN = 1.96;
 
-            Console.WriteLine("\n===== PRUEBA DE CORRIDAS =====");
+            Console.WriteLine("\n===== PRUEBA DE CORRIDAS ARRIBA Y ABAJO DE LA MEDIA=====");
             Console.WriteLine("Binarización de la muestra: " + cerosUnosLista);
             Console.WriteLine($"n = {n}");
             Console.WriteLine($"Número de: 1 = {n1}, 0 = {n2}");
