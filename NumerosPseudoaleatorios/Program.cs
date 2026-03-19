@@ -11,6 +11,7 @@ namespace NumerosPseudoaleatorios
         private static bool verificar = true;
         //El HashSet nos sirve para verificar que ningun numero aleatorio se repita.
         private static HashSet<double> numerosUnicos = new HashSet<double>();
+        static List<double> listaRi = new List<double>();
         static void Main(string[] args)
         {
             int opcion;
@@ -233,6 +234,7 @@ namespace NumerosPseudoaleatorios
         static void AlgoritmoCongruencialLinealObtencionDatos()
         {
             Console.Clear();
+            listaRi.Clear();
             verificar = true;
             numerosUnicos.Clear();
             Console.WriteLine("=== Algoritmo Congruencial Lineal ===");
@@ -269,6 +271,8 @@ namespace NumerosPseudoaleatorios
             }
             Console.WriteLine("========================");
             Console.WriteLine($"\nTotal: {numAleatoriosACL.Item3} de {cantNum}");
+
+            PruebaCorridasMedia(listaRi);
             Console.WriteLine("\nPresiona cualquier tecla...");
             Console.ReadKey();
             numerosUnicos.Clear();
@@ -296,6 +300,7 @@ namespace NumerosPseudoaleatorios
                 {
                     xGenerados[i] = xn;
                     numAleatorios[i] = numeroAleatorio;
+                    listaRi.Add(numeroAleatorio);
                     numCreadosConExito = i + 1;
                     x0 = xn;
                 }
@@ -311,6 +316,7 @@ namespace NumerosPseudoaleatorios
         static void MultiplicadorConstante()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== MULTIPLICADOR CONSTANTE ===\n");
@@ -391,6 +397,7 @@ namespace NumerosPseudoaleatorios
                         string rTexto = "0." + nuevoX.ToString("D4");
                         double r = double.Parse(rTexto);
                         r = Math.Round(r, 4);
+                        listaRi.Add(r);
 
                         verificar = verificador(r);
 
@@ -424,6 +431,7 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
@@ -432,6 +440,7 @@ namespace NumerosPseudoaleatorios
         static void EjecutarCongruencialCuadratico()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== CONGRUENCIAL CUADRÁTICO ===\n");
@@ -551,6 +560,7 @@ namespace NumerosPseudoaleatorios
 
                         double ri = (double)siguienteX / (m - 1);
                         ri = Math.Round(ri, 4);
+                        listaRi.Add(ri);
 
                         Program.verificar = Program.verificador(ri);
 
@@ -584,6 +594,7 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
@@ -592,6 +603,7 @@ namespace NumerosPseudoaleatorios
         static void EjecutarBlumBlumShub()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== BLUM BLUM SHUB ===\n");
@@ -676,6 +688,7 @@ namespace NumerosPseudoaleatorios
                         long siguienteX = (xi * xi) % m;
                         double ri = (double)siguienteX / (m - 1);
                         ri = Math.Round(ri, 4);
+                        listaRi.Add(ri);
 
                         Program.verificar = Program.verificador(ri);
 
@@ -709,6 +722,7 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
@@ -717,6 +731,7 @@ namespace NumerosPseudoaleatorios
         static void CuadradosMedios()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== CUADRADOS MEDIOS ===\n");
@@ -786,6 +801,7 @@ namespace NumerosPseudoaleatorios
                         string rTexto = "0." + nuevoX.ToString("D4");
                         double r = double.Parse(rTexto);
                         r = Math.Round(r, 4);
+                        listaRi.Add(r);
 
                         verificar = verificador(r);
 
@@ -819,6 +835,7 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
@@ -827,6 +844,7 @@ namespace NumerosPseudoaleatorios
         static void ProductosMedios()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== PRODUCTOS MEDIOS ===\n");
@@ -909,6 +927,7 @@ namespace NumerosPseudoaleatorios
                         string rTexto = "0." + nuevoX.ToString("D4");
                         double r = double.Parse(rTexto);
                         r = Math.Round(r, 4);
+                        listaRi.Add(r);
 
                         verificar = verificador(r);
 
@@ -943,6 +962,7 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
@@ -951,6 +971,7 @@ namespace NumerosPseudoaleatorios
         public static void AlgoritmoCongruencialAditivo()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== CONGRUENCIAL ADITIVO ===\n");
@@ -1036,6 +1057,7 @@ namespace NumerosPseudoaleatorios
                         int nuevo_X = (x_anterior + x_n_posiciones_atras) % m;
                         double nuevo_r = (double)nuevo_X / (m - 1);
                         nuevo_r = Math.Round(nuevo_r, 4);
+                        listaRi.Add(nuevo_r);
 
                         Program.verificar = Program.verificador(nuevo_r);
 
@@ -1070,6 +1092,7 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
@@ -1078,6 +1101,7 @@ namespace NumerosPseudoaleatorios
         public static void AlgoritmoCongruencialMultiplicativo()
         {
             Console.Clear();
+            listaRi.Clear();
             try
             {
                 Console.WriteLine("=== CONGRUENCIAL MULTIPLICATIVO ===\n");
@@ -1266,6 +1290,7 @@ namespace NumerosPseudoaleatorios
                         int nuevo_X = (a * x_actual) % m;
                         double nuevo_r = (double)nuevo_X / (m - 1);
                         nuevo_r = Math.Round(nuevo_r, 4);
+                        listaRi.Add(nuevo_r);
 
                         Program.verificar = Program.verificador(nuevo_r);
 
@@ -1300,10 +1325,74 @@ namespace NumerosPseudoaleatorios
             }
             finally
             {
+                PruebaCorridasMedia(listaRi);
                 Console.WriteLine("\nPresiona cualquier tecla...");
                 Console.ReadKey();
             }
         }
 
+        static void PruebaCorridasMedia(List<double> datos)
+        {
+            int n = datos.Count;
+
+            if (n < 2)
+            {
+                Console.WriteLine("No hay suficientes datos para la prueba");
+                return;
+            }
+
+            double media = 0.5;
+            List<int> unosCeros = new List<int>();
+
+            foreach (var r in datos)
+            {
+                if (r >= media)
+                    unosCeros.Add(1);
+                else
+                    unosCeros.Add(0);
+            }
+
+            // Contar corridas
+            int corridas = 1;
+
+            for (int i = 1; i < unosCeros.Count; i++)
+            {
+                if (unosCeros[i] != unosCeros[i - 1])
+                    corridas++;
+            }
+
+            // Contar n1 y n2
+            int n1 = unosCeros.Count(s => s == 1);
+            int n2 = unosCeros.Count(s => s == 0);
+            string cerosUnosLista = string.Join(", ", unosCeros);
+
+            // Media esperada
+            double mediaCorridas = ((2.0 * n1 * n2) / n) + 1;
+
+            // Varianza
+            double varianza = (2.0 * n1 * n2 * (2 * n1 * n2 - n)) /
+                              (Math.Pow(n, 2) * (n - 1));
+
+            double desviacion = Math.Sqrt(varianza);
+
+            // Estadístico Z
+            double z = (corridas - mediaCorridas) / desviacion;
+
+            double limiteTablaN = 1.96;
+
+            Console.WriteLine("\n===== PRUEBA DE CORRIDAS =====");
+            Console.WriteLine("Binarización de la muestra: " + cerosUnosLista);
+            Console.WriteLine($"n = {n}");
+            Console.WriteLine($"Número de: 1 = {n1}, 0 = {n2}");
+            Console.WriteLine($"Corridas = {corridas}");
+            Console.WriteLine($"Media esperada = {mediaCorridas:F4}");
+            Console.WriteLine($"Varianza = {varianza:F4}");
+            Console.WriteLine($"Estadístico Z = {z:F4}");
+
+            if (Math.Abs(z) < limiteTablaN)
+                Console.WriteLine("No se rechaza la independencia. El conjunto de números es apto para la simulación");
+            else
+                Console.WriteLine("Los números NO son independientes.");
+        }
     }
 }
